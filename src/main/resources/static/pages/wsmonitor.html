@@ -12,10 +12,11 @@
 <h1>websocket监控</h1>
 <div id="count"></div>
 <div id="onlinedetails"></div>
-<div class="sendall">群发消息：<input id="sendAllMsg" value=""><input type="button" value="推送" onclick="sendAll()"></div>
+<div class="sendall">群发消息：<input id="sendAllMsg" value=""><input type="button" value="推送" onclick="sendMsg()"></div>
 </body>
 <script>
     $(function () {
+        debugger
         var html="";
         var html1="";
         $.ajax({
@@ -25,10 +26,14 @@
             dataType: "json",
             success: function (data) {
                 if (data){
+                    debugger
                     html="<label>链接数："+data.count+"</label>"
                     $("#count").html(html);
-                    $.each(data.addrs,function (i,o) {
-                        html1 += "<label>客户ip："+o.addr+"</label>-----<label>客户id："+o.userid+"</label><br>"
+                    $.each(data.onlineDetails,function (i,o) {
+                        // var userId=Object.keys(o)[i];
+                        // var userIp=Object.values(o)[i];
+                        html1 += "<label>客户ip："+o.userIp+"</label>-----<label>客户id："+o.userId+"</label>" +
+                            "----<label><input name='msg' /><input type='button' value='推送消息' onclick='sendMsg(this,"+o.userId+")'></label><br>"
                     })
                     $("#onlinedetails").html(html1);
                 }
@@ -39,17 +44,25 @@
         });
     });
 
-    function sendAll() {
+    function sendMsg(t,userId) {
+        debugger
+        var url="/senAllMsg";
+        var msg=$("#sendAllMsg").val();
+        if (userId){
+            debugger
+            url="/sendMsg";
+            msg=$(t).prev().val();
+        }
         $.ajax({
             type: "POST",
-            url: "/senAllMsg",
-            data: {"msg":$("#sendAllMsg").val()},
+            url: url,
+            data: {"msg":msg,"userId":userId},
             dataType: "json",
             success: function (data) {
                 if (data){
-                    alert("群发成功！")
+                    alert("推送成功！")
                 } else{
-                    alert("群发失败！")
+                    alert("推送失败！")
                 }
             },
             error: function () {

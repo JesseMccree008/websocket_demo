@@ -8,10 +8,10 @@
 <body>
 <h1>websocket测试</h1>
 请输入您的用户id<input type="text" id="user"/>
-<input type="button" value="连接" onclick="connect()"/><br/>
-
+<input id="con" type="button" value="连接" onclick="connect()"/><br/>
+<!--
 请输入内容<input type="text" value="" id="msg">
-<input type="button" value="发送" onclick="sendMsg()">
+<input type="button" value="发送" onclick="sendMsg()">-->
 </body>
 <script>
     /*var socket;
@@ -56,13 +56,16 @@
             if(typeof(WebSocket) == "undefined") {
                 alert("该浏览器不支持websocket");
             }else{
-                ws = new  WebSocket("ws://192.168.8.81:8083/websocket/"+userid);
+                ws = new  WebSocket("ws://192.168.6.18:8083/websocket/"+userid);
             }
 
-           /* ws.onopen = function(evt){
+            ws.onopen = function(evt){
                 alert("连接成功")
-            }*/
+            //  置灰链接按钮
+                $("#con").attr("disabled", true);
+            }
             ws.onmessage=function (evt) {
+                debugger
                 alert("收到来自服务端的消息："+evt.data)
             }
             ws.onclose = function(evt){
@@ -77,6 +80,7 @@
     }
 
     function sendMsg() {
+
         ws.send($("#msg").val());
     }
 </script>
